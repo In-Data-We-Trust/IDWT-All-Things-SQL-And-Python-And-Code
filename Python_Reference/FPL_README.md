@@ -63,8 +63,7 @@ To enable this feature:
 2. Set the following variables:
    ```
    server_name=your_server_name
-   database_name=your_database_name
-   username_db=your_username
+   database_name=your_database_name   username_db=your_username
    password=your_password
    ```
 
@@ -72,14 +71,15 @@ To enable this feature:
 
 - `FPL_Team_Selector_Consolidated.ipynb`: Main notebook with complete workflow
 - `FPL_README.md`: This documentation file
+- `archive/`: Folder containing legacy FPL files that have been consolidated
 
 ## Legacy Files (Reference Only)
 
-The following files have been consolidated into `FPL_Team_Selector_Consolidated.ipynb`:
+The following files have been moved to the `archive/` folder and have been consolidated into `FPL_Team_Selector_Consolidated.ipynb`:
 
-- `FPL_Prototype.ipynb`: Original prototype for data extraction and database storage
-- `fpl_first_prototype_pick_team.ipynb`: Initial team optimization logic
-- `FPL_Team_Selector.ipynb`: Previous version with Git operations
+- `archive/FPL_Prototype.ipynb`: Original prototype for data extraction and database storage
+- `archive/fpl_first_prototype_pick_team.ipynb`: Initial team optimization logic
+- `archive/FPL_Team_Selector.ipynb`: Previous version with Git operations
 
 ## Troubleshooting
 
