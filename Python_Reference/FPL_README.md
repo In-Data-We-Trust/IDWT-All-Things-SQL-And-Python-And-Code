@@ -1,77 +1,91 @@
-# Python Reference: FPL Team Selection and Utilities
+# Fantasy Premier League (FPL) Team Selector
 
-This document provides an overview and documentation for the Python scripts and notebooks in the `Python_Reference` folder, with a focus on Fantasy Premier League (FPL) team selection and related utilities.
+This document provides an overview and documentation for the FPL team selection workflow in the `Python_Reference` folder.
 
-## Contents
-- [FPL_Prototype.ipynb](#fpl_prototypeipynb)
-- [fpl_first_prototype_pick_team.ipynb](#fpl_first_prototype_pick_teamipynb)
-- [Reference_Python_Notebook.ipynb](#reference_python_notebookipynb)
-- [database_connections_git_copy.py](#database_connections_git_copypy)
-- [Azure_SQL_DB_connection.ipynb](#azure_sql_db_connectionipynb)
+## Quick Start
 
----
+1. Open and run the `FPL_Team_Selector_Consolidated.ipynb` notebook
+2. Follow the cells from top to bottom
+3. Adjust parameters in the "Customization" section if desired
+4. Review your optimal team selection
 
-## FPL_Prototype.ipynb
-A comprehensive notebook for:
-- Downloading and processing FPL data from the official API
-- Data wrangling and transformation using pandas
-- Storing and loading data to/from Azure SQL DB
-- Functions for extracting player and team statistics
-- Useful for data exploration and building custom FPL analytics
+## Features
 
-**Key Features:**
-- Uses `requests` to fetch FPL data
-- Data normalization and DataFrame creation
-- SQL database integration (requires environment variables for credentials)
-- Example: Extracting player gameweek history
+The FPL Team Selector provides the following capabilities:
 
----
+- **Data Extraction**: Fetches the latest data from the official FPL API
+- **Team Optimization**: Uses linear programming to find the optimal team within FPL constraints
+- **Customizable Parameters**:
+  - Budget adjustment
+  - Player selection criteria (points, form, minutes played)
+  - Team preferences
+  - Must-include or must-exclude players
+- **Data Storage**: Optional saving to Azure SQL Database for historical analysis
+- **Team Validation**: Ensures all FPL rules are satisfied
+- **Player Statistics**: Look up detailed stats for specific players
 
-## fpl_first_prototype_pick_team.ipynb
-A focused notebook for:
-- Building an optimal FPL team using linear programming (PuLP)
-- Fetches latest player data from the FPL API
-- Defines constraints for budget, squad size, and team/position limits
-- Outputs a suggested starting 11, bench, and captain
+## How It Works
 
-**Key Features:**
-- Uses `requests` and `pulp` libraries
-- Easy to run for up-to-date team suggestions
-- Can be merged into the main FPL notebook for a single workflow
+The team selection process follows these steps:
 
----
+1. **Data Fetching**: Gets the latest player, team, and position data from the FPL API
+2. **Data Preparation**: Transforms the raw API data into a format suitable for analysis
+3. **Filtering**: Applies filters for minutes played, injury status, etc.
+4. **Optimization**: Uses linear programming to find the optimal team
+5. **Validation**: Ensures the selected team meets all FPL rules
+6. **Display**: Shows the selected starting 11, bench, captain, and team statistics
 
-## Reference_Python_Notebook.ipynb
-A general-purpose notebook for:
-- Storing frequently used Python syntax and data analysis patterns
-- Quick reference for pandas operations (filtering, adding/removing columns, etc.)
+## Linear Programming Model
 
----
+The team selection uses the PuLP library to solve a linear programming problem with:
 
-## database_connections_git_copy.py
-A Python script template for:
-- Storing database connection credentials (should be renamed to `database_connections_local.py` and updated with your own credentials)
+- **Objective**: Maximize total points/score of the starting 11
+- **Constraints**:
+  - Total cost ≤ £100 million
+  - Squad size = 15 players
+  - Starting 11 size = 11 players
+  - Goalkeeper: 1-1 (starting), 2 (squad)
+  - Defenders: 3-5 (starting), 5 (squad)
+  - Midfielders: 2-5 (starting), 5 (squad)
+  - Forwards: 1-3 (starting), 3 (squad)
+  - Maximum 3 players from any team
 
----
+## Database Storage (Optional)
 
-## Azure_SQL_DB_connection.ipynb
-A notebook for:
-- Demonstrating how to connect to an Azure SQL Database using `pyodbc` and `pandas`
-- Example query and DataFrame loading
+If you have an Azure SQL Database, you can store:
+- Player data
+- Team data
+- Position data
+- Selected team history
 
----
+To enable this feature:
+1. Create a `.env` file with your database credentials
+2. Set the following variables:
+   ```
+   server_name=your_server_name
+   database_name=your_database_name
+   username_db=your_username
+   password=your_password
+   ```
 
-## Recommended Workflow
-- Use `FPL_Prototype.ipynb` for data extraction, exploration, and database loading.
-- Use or merge `fpl_first_prototype_pick_team.ipynb` for optimal team selection each week.
-- Store your database credentials securely and do not commit them to version control.
-- Refer to `Reference_Python_Notebook.ipynb` for quick code snippets.
+## File Organization
 
-## One-Click Team Selection
-For a single, easy-to-run workflow, merge the team selection logic from `fpl_first_prototype_pick_team.ipynb` into `FPL_Prototype.ipynb` or create a new notebook/script that:
-- Fetches latest FPL data
-- Runs the optimization model
-- Outputs the recommended team
+- `FPL_Team_Selector_Consolidated.ipynb`: Main notebook with complete workflow
+- `FPL_README.md`: This documentation file
+
+## Legacy Files (Reference Only)
+
+The following files have been consolidated into `FPL_Team_Selector_Consolidated.ipynb`:
+
+- `FPL_Prototype.ipynb`: Original prototype for data extraction and database storage
+- `fpl_first_prototype_pick_team.ipynb`: Initial team optimization logic
+- `FPL_Team_Selector.ipynb`: Previous version with Git operations
+
+## Troubleshooting
+
+- **API Access Issues**: The FPL API occasionally changes. If you encounter errors, check if the API endpoints have been updated.
+- **Optimization Failures**: If no valid team is found, try relaxing your filtering criteria or increasing your budget.
+- **Database Connection Errors**: Verify your database credentials and ensure your IP address has access to the database.
 
 ---
 
