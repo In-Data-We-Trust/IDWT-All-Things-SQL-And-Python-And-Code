@@ -73,6 +73,19 @@ def fetch_bootstrap_static(timeout=30):
     return data
 
 
+def season_has_started(bootstrap):
+    """
+    True once any gameweek is current or finished, from the events data.
+
+    This is the reliable check: player-level fields are not trustworthy for
+    it - the 2026/27 preseason bootstrap was observed still carrying last
+    season's minutes, so 'minutes > 0' can report the season as started
+    before a ball has been kicked.
+    """
+    return any(ev.get("is_current") or ev.get("finished")
+               for ev in bootstrap.get("events", []))
+
+
 def fetch_fixtures(event_id=None, future_only=False, timeout=30):
     """
     Fetch fixtures. Optionally restrict to one gameweek (event_id) or to

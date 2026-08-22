@@ -51,7 +51,7 @@ The main `bootstrap-static` endpoint only covers the **current** season, so befo
 
 ## Team Monitoring (`FPL_Team_Monitor.ipynb`)
 
-Once your team is picked, run `FPL_Team_Monitor.ipynb` weekly (same day each week for like-for-like comparisons). Each run:
+Once your team is picked, run `FPL_Team_Monitor.ipynb` weekly (same day each week for like-for-like comparisons). The selector saves your chosen squad to `data/my_squad.json`, and the monitor loads it automatically when its `MY_SQUAD` list is left empty - a filled-in `MY_SQUAD` list always takes priority, so keep that list in sync with your real team as you make transfers. Each run:
 
 1. Fetches the latest player data and saves a snapshot to a local SQLite file (`data/fpl_snapshots.sqlite` - no database server required)
 2. Diffs against the previous week's snapshot to compute **week-over-week % change in transfer activity** (`transfers_in_event` / `transfers_out_event`) - the ownership-momentum signal that anticipates bandwagons and price moves
