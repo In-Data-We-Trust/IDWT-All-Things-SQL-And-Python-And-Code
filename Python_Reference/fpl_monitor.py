@@ -22,13 +22,16 @@ compares this week's transfer flow against last week's - which is the
 signal you want for spotting momentum and likely price moves.
 """
 
+import json
 import os
 import sqlite3
+import time
 from datetime import date
 
 import pandas as pd
 
 DEFAULT_DB_PATH = os.path.join("data", "fpl_snapshots.sqlite")
+DEFAULT_SQUAD_PATH = os.path.join("data", "my_squad.json")
 
 SNAPSHOT_COLUMNS = [
     "player_id", "web_name", "full_name", "team_id", "team_name", "position",
@@ -46,6 +49,44 @@ STATUS_LABELS = {
     "u": "unavailable",
     "n": "not in squad",
 }
+
+
+def save_squad(player_names, path=DEFAULT_SQUAD_PATH, note=None):
+    """
+    Save a squad (list of player names) so the monitor notebook can pick it
+    up automatically. Called by the team selector after a run; overwrites any
+    previously saved squad.
+    """
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({
+            "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "note": note or "",
+            "players": list(player_names),
+        }, f, ensure_ascii=False, indent=2)
+    print(f"Saved {len(player_names)} players to {path}")
+
+
+def load_squad(path=DEFAULT_SQUAD_PATH):
+    """
+    Load the squad last saved by save_squad. Returns a list of player names,
+    or [] if no squad has been saved yet (or the file is unreadable).
+    """
+    if not os.path.exists(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        players = data.get("players", [])
+        if players:
+            print(f"Loaded {len(players)} players from {path} "
+                  f"(saved {data.get('saved_at', 'unknown')})")
+        return players
+    except (ValueError, OSError):
+        print(f"Warning: could not read {path}; configure MY_SQUAD manually.")
+        return []
 
 
 def bootstrap_to_snapshot_df(bootstrap):
